@@ -2,21 +2,31 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+## Getting Started
+
+Install dependencies (using pnpm):
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the development server:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## WebSocket Testing
+
+This project includes a simple WebSocket test UI on the home page (`src/app/page.tsx`).
+
+- The frontend will attempt to connect to a backend WebSocket server at `ws://localhost:8000`.
+- You can send messages using the input box; received messages will be displayed in the list below.
+- Make sure your backend WebSocket server is running and listening on port 8000 before testing.
+
+You can start editing the page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
 
 ## Learn More
 
