@@ -1,37 +1,35 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { io, Socket } from "socket.io-client";
 
 export default function Home() {
   const [status, setStatus] = useState<string>("disconnected");
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState<string>("");
-  const wsRef = useRef<WebSocket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    // Connect to local backend WebSocket server
-    const ws = new window.WebSocket("ws://localhost:8000");
-    wsRef.current = ws;
+    // Connect to socket.io backend
+    const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "http://localhost:8000";
     setStatus("connecting");
+    const socket = io(wsUrl);
+    socketRef.current = socket;
 
-    ws.onopen = () => setStatus("connected");
-    ws.onclose = () => setStatus("disconnected");
-    ws.onerror = () => setStatus("error");
-    ws.onmessage = (event) => {
-      setMessages((prev) => [...prev, event.data]);
-    };
+    socket.on("connect", () => setStatus("connected"));
+    socket.on("disconnect", () => setStatus("disconnected"));
+    socket.on("connect_error", () => setStatus("error"));
+    socket.on("message", (data: string) => {
+      setMessages((prev) => [...prev, data]);
+    });
 
     return () => {
-      ws.close();
+      socket.disconnect();
     };
   }, []);
 
   const sendMessage = () => {
-    if (
-      wsRef.current &&
-      wsRef.current.readyState === WebSocket.OPEN &&
-      input.trim()
-    ) {
-      wsRef.current.send(input);
+    if (socketRef.current && socketRef.current.connected && input.trim()) {
+      socketRef.current.emit("message", input);
       setInput("");
     }
   };

@@ -1,23 +1,24 @@
 import { Message } from "@src/@types/message";
+import axiosClient from "@src/@api/axiosClient";
+import { io, Socket } from "socket.io-client";
 
-const BASE_URL = process.env.BACKEND_URL || "http://localhost:8000";
+export function connectSocket() {
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
-export function connectSocket(): WebSocket {
-  return new window.WebSocket(`${BASE_URL}/socket`);
+  return io(BASE_URL);
 }
 
 export async function getGroups() {
-  const res = await fetch(`${BASE_URL}/get-group`, { credentials: "include" });
-  if (!res.ok) throw new Error("Failed to fetch groups");
-  return res.json();
+  const res = await axiosClient.get("/get-group", { withCredentials: true });
+  return res.data;
 }
 
 export async function getUsers() {
-  const res = await fetch(`${BASE_URL}/users`, { credentials: "include" });
-  if (!res.ok) throw new Error("Failed to fetch users");
-  return res.json();
+  const res = await axiosClient.get("/users", { withCredentials: true });
+  return res.data;
 }
 
-export function sendMessage(ws: WebSocket, msg: Message) {
-  ws.send(JSON.stringify(msg));
+export function sendMessage(socket: Socket, msg: Message) {
+  socket.emit("message", msg);
 }
