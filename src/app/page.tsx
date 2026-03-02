@@ -1,10 +1,17 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import NotificationIcon from "@src/components/NotificationIcon";
 
 export default function Home() {
+  // Placeholder: unreadCount should be replaced with real logic later
+  const [unreadCount] = useState(5);
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-start overflow-x-hidden bg-gradient-to-br from-[#f0f2f5] to-[#e4e6eb]">
+      {/* Notification Icon - top right */}
+      <div className="fixed top-6 right-8 z-50">
+        <NotificationIcon unreadCount={unreadCount} />
+      </div>
       {/* Animated background image */}
       <div className="absolute inset-0 z-0 animate-gradient-x">
         <img
@@ -59,7 +66,7 @@ export default function Home() {
             href="/messages"
             className="inline-block px-8 py-3 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 text-white font-bold text-lg shadow-lg hover:scale-105 transition-transform animate-send-btn"
           >
-            Messsage Now
+            Message Now
           </a>
         </section>
 
